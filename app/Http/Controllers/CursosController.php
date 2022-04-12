@@ -97,7 +97,7 @@ class CursosController extends Controller
     {
         $curso = DB::select("SELECT * FROM cur_cursos WHERE id_curso = $id_curso");
         $data = array();
-        $secciones = DB::SELECT("SELECT * FROM cur_secciones_cursos WHERE id_curso = ?", [$id_curso]);
+        $secciones = DB::SELECT("SELECT * FROM cur_secciones_cursos WHERE id_curso = ? AND estado = 1", [$id_curso]);
         $data['items'] = [
             'curso' => $curso,
             'secciones'=>$secciones,
@@ -180,6 +180,6 @@ class CursosController extends Controller
 
         $inscripcion_curso = DB::INSERT("INSERT INTO `estudiantes_cursos`(`id_curso`, `id_estudiante`, `solicitud`, `estado`, `forma_pago`, `valor`, `comprobante`) VALUES (?,?,?,?,?,?,?)", [$request->id_curso, $request->id_estudiante, $request->solicitud, $request->estado, $request->forma_pago, $request->valor, $fileName]);
 
-        return $inscripcion_curso;
+        // return $inscripcion_curso;
     }
 }

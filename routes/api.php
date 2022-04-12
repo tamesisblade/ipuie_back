@@ -24,6 +24,7 @@ Route::group(['middleware' => 'cors'],function(){
     //CURSOS
     Route::apiResource('cursos','CursosController');
     Route::post('guardar_seccion','CursosController@guardar_seccion');
+    Route::get('elimiar_seccion/{id_seccion}','CursosController@elimiar_seccion');
     Route::get('elimiar_curso/{id_curso}','CursosController@elimiar_curso');
     Route::post('inscripcion_curso','CursosController@inscripcion_curso');
     Route::get('curso_estudiante/{id_curso}/{id_estudiante}','CursosController@curso_estudiante');
@@ -50,7 +51,7 @@ Route::group(['middleware' => 'cors'],function(){
     Route::get('get_footer','CarruselesController@get_footer');
     Route::post('guardar_footer','CarruselesController@guardar_footer');
     Route::get('get_fondo','CarruselesController@get_fondo');
-    
+
     //ACERCA DE
     Route::get('get_acerca','CarruselesController@get_acerca');
     Route::post('save_get_acerca','CarruselesController@save_get_acerca');
@@ -83,6 +84,7 @@ Route::group(['middleware' => 'cors'],function(){
     Route::post('pregEvaluacionEstudiante', 'PregEvaluacionController@pregEvaluacionEstudiante');
     Route::get('verEvalCursoExport/{id}','EvaluacionController@verEvalCursoExport');
     Route::get('verCalificacionEval/{id}','EvaluacionController@verCalificacionEval');
-    
+    Route::get('eliminar_evaluacion/{id}','EvaluacionController@eliminar_evaluacion');
+
 
 });

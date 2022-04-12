@@ -312,7 +312,7 @@ export default {
     methods: {
         getLibro() {
             let me = this;
-            var url = "http://localhost:8000/libros";
+            var url = "https://server.ipuiecotocollao.com/libros";
             axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.libros = response.data;
