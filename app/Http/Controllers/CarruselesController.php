@@ -83,9 +83,10 @@ class CarruselesController extends Controller
     }
 
 
-    public function elimiar_carrusel($id_carrusel)
+    public function eliminar_carrusel($id_carrusel, $img)
     {
         $carrusel = DB::DELETE("DELETE FROM `lay_carruseles` WHERE `id_carrusel` = $id_carrusel");
+        unlink('images/carrousel/'.$img);
     }
 
 
@@ -130,10 +131,10 @@ class CarruselesController extends Controller
     }
 
 
-    public function eliminar_img_cubo($id_cubo)
+    public function eliminar_img_cubo($id_cubo, $img)
     {
         DB::DELETE("DELETE FROM `lay_carruseles` WHERE `id_carrusel` = $id_cubo");
-        //aumentar eliminar imagen
+        unlink('images/carrousel/'.$img);
     }
 
     public function get_footer()
@@ -143,7 +144,7 @@ class CarruselesController extends Controller
         return $footer;
     }
 
-    
+
     public function get_acerca()
     {
         $acerca = DB::select("SELECT * FROM acerca_de");
@@ -153,9 +154,9 @@ class CarruselesController extends Controller
 
 
     public function save_get_acerca(Request $request)
-    {  
+    {
         $acerca = DB::UPDATE("UPDATE `acerca_de` SET `contenido`=?,`cod_mapa`=? WHERE `id` = ?", [$request->contenido, $request->cod_mapa, $request->id]);
-        
+
         return $acerca;
     }
 

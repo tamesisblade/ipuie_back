@@ -47,10 +47,11 @@ Route::group(['middleware' => 'cors'],function(){
     Route::get('get_parallax','CarruselesController@get_parallax');
     Route::get('get_lados_cubo','CarruselesController@get_lados_cubo');
     Route::post('guardar_img_cubo','CarruselesController@guardar_img_cubo');
-    Route::get('eliminar_img_cubo/{id_cubo}','CarruselesController@eliminar_img_cubo');
+    Route::get('eliminar_img_cubo/{id_cubo}/{img}','CarruselesController@eliminar_img_cubo');
     Route::get('get_footer','CarruselesController@get_footer');
     Route::post('guardar_footer','CarruselesController@guardar_footer');
     Route::get('get_fondo','CarruselesController@get_fondo');
+    Route::get('eliminar_carrusel/{id}/{img}','CarruselesController@eliminar_carrusel');
 
     //ACERCA DE
     Route::get('get_acerca','CarruselesController@get_acerca');
@@ -85,6 +86,7 @@ Route::group(['middleware' => 'cors'],function(){
     Route::get('verEvalCursoExport/{id}','EvaluacionController@verEvalCursoExport');
     Route::get('verCalificacionEval/{id}','EvaluacionController@verCalificacionEval');
     Route::get('eliminar_evaluacion/{id}','EvaluacionController@eliminar_evaluacion');
+    Route::get('quitarPregEvaluacion/{id}','PregEvaluacionController@quitarPregEvaluacion');
 
 
 });
