@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;///instanciamos base de datos para poder hacer consultas con varias tablas
 use App\Evaluaciones;//modelo Evaluaciones.php
+use App\Calificaciones;
 
 class EvaluacionController extends Controller
 {
@@ -31,13 +33,16 @@ class EvaluacionController extends Controller
          e.id_asignatura,e.id_docente, e.descripcion, e.puntos, e.fecha_inicio,
           e.fecha_fin, e.duracion, e.estado,
            e.grupos_evaluacion, e.cant_unidades
-            FROM evaluaciones e,  cur_secciones_cursos c
-
+            FROM evaluaciones e
+			   LEFT JOIN cur_secciones_cursos c ON c.id_curso = e.codigo_curso
              WHERE e.id_docente = '$request->docente'
              AND e.codigo_curso = '$request->codigo'
-             AND e.codigo_curso = c.id_seccion
+             AND e.seccion_id =  '$request->seccion_id'
+             AND c.id_curso = '$request->codigo'
+             AND c.id_seccion =  '$request->seccion_id'
 
-                ");
+
+        ");
 
         return $evaluaciones;
     }
@@ -82,6 +87,7 @@ class EvaluacionController extends Controller
         $evaluacion->estado = $request->estado;
         $evaluacion->id_docente = $request->docente;
         $evaluacion->codigo_curso = $request->codigo;
+        $evaluacion->seccion_id = $request->seccion_id;
 
 
         $evaluacion->save();
@@ -110,17 +116,17 @@ class EvaluacionController extends Controller
 
     public function evaluacionesEstudianteCurso(Request $request)
     {
-        $evaluaciones = DB::SELECT("SELECT DISTINCT  cu.titulo as nombre_curso,
-       e.id, e.nombre_evaluacion,
-         e.descripcion, e.puntos, e.fecha_inicio, e.fecha_fin, e.duracion,
-          e.estado, es.id_estudiante as id_estudiante
-            FROM evaluaciones e, estudiantes_cursos es, cur_secciones_cursos cu
-             WHERE e.codigo_curso = es.id_curso
-             AND e.estado = 1
-             AND es.id_estudiante = '$request->estudiante'
-             AND es.id_estudiante NOT IN (SELECT c.id_estudiante from calificaciones c WHERE c.id_evaluacion = e.id)
-             AND es.id_curso = cu.id_seccion
-              AND cu.id_seccion = '$request->codigo'
+        $evaluaciones = DB::SELECT("SELECT DISTINCT 
+        e.id, e.nombre_evaluacion,
+          e.descripcion, e.puntos, e.fecha_inicio, e.fecha_fin, e.duracion,
+           e.estado, es.id_estudiante as id_estudiante
+             FROM evaluaciones e, estudiantes_cursos es, cur_secciones_cursos cu
+              WHERE e.codigo_curso = es.id_curso
+              AND e.estado = 1
+              AND es.id_estudiante = '$request->estudiante'
+              AND es.id_estudiante NOT IN (SELECT c.id_estudiante from calificaciones c WHERE c.id_evaluacion = e.id)
+             AND e.seccion_id = '$request->codigo'
+               
                 ");
 
         return $evaluaciones;
@@ -135,6 +141,7 @@ class EvaluacionController extends Controller
            WHERE c.id_evaluacion = e.id
             AND c.id_estudiante = $request->estudiante
              AND e.codigo_curso = '$request->codigo'
+             AND e.seccion_id = '$request->seccion_id'
               AND es.id_curso = e.codigo_curso
                AND es.id_estudiante = c.id_estudiante
                 AND e.estado = 1
@@ -144,7 +151,7 @@ class EvaluacionController extends Controller
     }
 
 
-     public function verCalificacionEval($codigo)
+     public function verCalificacionEval($codigo,$session)
     {
         $estudiantes = DB::SELECT("SELECT DISTINCT e.id, e.id_estudiante, e.id_curso, u.cedula, u.nombres,
         u.apellidos, e.estado as estado_estudiante, u.estado_idEstado as estado_usuario,
@@ -160,13 +167,19 @@ class EvaluacionController extends Controller
                 $calificaciones = DB::SELECT("SELECT DISTINCT e.id, e.nombre_evaluacion, e.puntos, e.duracion, es.id_estudiante,
                  (SELECT c.calificacion FROM calificaciones c
                   WHERE c.id_estudiante = es.id_estudiante
-                  AND c.id_evaluacion = e.id) as calificacion
+                  AND c.id_evaluacion = e.id) as calificacion,
+
+                  (SELECT c.id FROM calificaciones c
+                  WHERE c.id_estudiante = es.id_estudiante
+                  AND c.id_evaluacion = e.id) as calificacion_id
+
                  FROM evaluaciones e, estudiantes_cursos es
                   WHERE e.codigo_curso = ?
                   AND e.codigo_curso = es.id_curso
+                  AND e.seccion_id = '$session'
                   AND es.id_estudiante = ?",[$codigo, $value->id_estudiante]);
 
-                $total = DB::SELECT("SELECT DISTINCT * FROM evaluaciones e WHERE e.codigo_curso = ?",[$codigo]);
+                $total = DB::SELECT("SELECT DISTINCT * FROM evaluaciones e WHERE e.codigo_curso = ?   AND e.seccion_id = '$session' ",[$codigo]);
 
                 $data['items'][$key] = [
                     'id' => $value->id,
@@ -213,15 +226,13 @@ class EvaluacionController extends Controller
     }
 
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+    //para cambiar la calificacion
+    public function changeCalificacion(Request $request){
+        
+        $calificacion = Calificaciones::findOrfail($request->id);
+        $calificacion->calificacion = $request->nota;
+        $calificacion->save();
+        return ["status" => "1", "message" => "Se cambio la calificación correctamente"];
     }
 
     /**

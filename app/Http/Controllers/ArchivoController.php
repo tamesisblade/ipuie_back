@@ -39,19 +39,9 @@ class ArchivoController extends Controller
         $idusuario = $request->idusuario;
         $file = $request->file('archivo');
         $extension = $request->file('archivo')->extension();
-
-     
-        
-
         $ruta = public_path('./tareas/');
         $codigo = uniqid().'.'.$extension;
-
         $archivo = $file->getClientOriginalName();
-     
-       
-      
-
-
         $file->move($ruta,$codigo);
      
         return ["nombreArchivo" => $archivo, "extensionArchivo" => $extension,"codigoArchivo" => $codigo];

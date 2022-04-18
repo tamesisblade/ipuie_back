@@ -128,70 +128,53 @@ class PregEvaluacionController extends Controller
     }
 
     public function guardarEvaluacion(Request $request){
+      
         //GUARDAR PREGUNTA
             $pregunta = new Preguntas();
-            
-
-            $pregunta->descripcion = $request->pregunta;
-           
-            $pregunta->id_tipo_pregunta = "5";
-     
+            $pregunta->descripcion = $request->pregunta;         
+            $pregunta->id_tipo_pregunta = $request->id_tipo_pregunta;
             $pregunta->puntaje_pregunta = '1';
             $pregunta->idusuario = $request->usuario;
-            
             $pregunta->save();
 
         //GUARDAR PREGUNTA EVALUACION
-          $pregunta_eva = new Pre_eva();
+           $pregunta_eva = new Pre_eva();
             $pregunta_eva->id_evaluacion = $request->evaluacion_id;
             $pregunta_eva->id_pregunta = $pregunta->id;
             $pregunta_eva->grupo = '1';
             $pregunta_eva->save();
 
-            //para guardar la respeusta
-          
-            $respuesta = new OpcionPregunta();
-            $respuesta->id_pregunta = $pregunta->id;
-            $respuesta->opcion = $request->opcion1;
-             if($request->respuesta == "1"){
-                $respuesta->tipo = "1";
-            }else{
-                $respuesta->tipo = "0";
+            //si la pregunta es con respuestas
+            if($request->conRespuestas){
+                //para guardar la respuesta
+                $respuesta = new OpcionPregunta();
+                $respuesta->id_pregunta = $pregunta->id;
+                $respuesta->opcion = $request->opcion1;
+                $respuesta->tipo = $request->tipo1;
+                $respuesta->save();
+
+                //segunda respuesta
+                $respuesta2 = new OpcionPregunta();
+                $respuesta2->id_pregunta = $pregunta->id;
+                $respuesta2->opcion = $request->opcion2;
+                $respuesta2->tipo = $request->tipo2;
+                $respuesta2->save();
+
+                //tercera respuesta
+                $respuesta3 = new OpcionPregunta();
+                $respuesta3->id_pregunta = $pregunta->id;
+                $respuesta3->opcion = $request->opcion3;
+                $respuesta3->tipo = $request->tipo3;
+                $respuesta3->save();
+
+                //cuarta respuesta
+                $respuesta4 = new OpcionPregunta();
+                $respuesta4->id_pregunta = $pregunta->id;
+                $respuesta4->opcion = $request->opcion4;
+                $respuesta4->tipo = $request->tipo4;
+                $respuesta4->save();
             }
-            $respuesta->save();
-
-            //segunda respuesta
-            $respuesta2 = new OpcionPregunta();
-            $respuesta2->id_pregunta = $pregunta->id;
-            $respuesta2->opcion = $request->opcion2;
-                if($request->respuesta == "2"){
-                    $respuesta2->tipo = "1";
-                }else{
-                    $respuesta2->tipo = "0";
-                }
-            $respuesta2->save();
-
-            //tercera respuesta
-            $respuesta3 = new OpcionPregunta();
-            $respuesta3->id_pregunta = $pregunta->id;
-            $respuesta3->opcion = $request->opcion3;
-                if($request->respuesta == "3"){
-                    $respuesta3->tipo = "1";
-                }else{
-                    $respuesta3->tipo = "0";
-                }
-            $respuesta3->save();
-
-            //cuarta respuesta
-            $respuesta4 = new OpcionPregunta();
-            $respuesta4->id_pregunta = $pregunta->id;
-            $respuesta4->opcion = $request->opcion4;
-                if($request->respuesta == "4"){
-                    $respuesta2->tipo = "1";
-                }else{
-                    $respuesta4->tipo = "0";
-                }
-            $respuesta4->save();
+                
             
             return ["status" => "0" , "message" => "se guardo correctamente"];
 

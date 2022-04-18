@@ -110,7 +110,34 @@ class TareaController extends Controller
     }
     public function store(Request $request)
     {
-      
+        if($request->id_tarea > 0){
+            $tarea = Tarea::findOrFail($request->id_tarea);
+            $tarea->id_seccion =  $request->id_seccion;
+            $tarea->observaciones =  $request->observaciones;
+            $tarea->id_seccion =  $request->id_seccion;
+            $tarea->fecha_entrega =  $request->fecha_entrega;
+            $tarea->estado =  $request->estado;
+            //si envia foto
+            if($request->archivo_old){
+                if(file_exists('tareas/'.$request->archivo_old) ){
+                    unlink('tareas/'.$request->archivo_old);
+                    
+                }  
+                //guardar el nuevo archiv
+                $traercodigo = $this->makeid();    
+                $files = $request->file('archivo');
+                $path = "/tareas/";
+                $filename = $traercodigo."".$files->getClientOriginalName();
+                if($files->move(public_path().$path,$filename)){
+                    $tarea->archivo =  $traercodigo."".$files->getClientOriginalName();
+                    $tarea->tarea = $files->getClientOriginalName();
+                }
+            }
+
+            $tarea->save();
+            return "se guardo correctamente";
+
+        }
             $traercodigo = $this->makeid();    
             $files = $request->file('archivo');
             // foreach($files as $clave => $file){
@@ -177,22 +204,16 @@ class TareaController extends Controller
 
     public function eliminarTareaEstudiante(Request $request){
        
-        $verificarsiExiste = DB::select("SELECT * FROM tareas_estudiante WHERE id = $request->idrespuesta");
+        $tarea = TareaEstudiante::findOrFail($request->idrespuesta);
 
+        $verificarsiExiste = DB::select("SELECT * FROM tareas_estudiante WHERE id = $request->idrespuesta");
         if(!empty($verificarsiExiste)){
-            
-         
-            $archivo  = $request->url;
-                        
+            $archivo  = $request->url;           
             if(file_exists('tareas/'.$archivo) ){
                 unlink('tareas/'.$archivo);
-                
-
-            }   
-           
-            $archivo = TareaEstudiante::findOrFail($request->idrespuesta);
-            $archivo->delete();
-
+            } 
+        
+            $tarea->delete();
             return ["status"=> "1","message" => "Se devolvio correctamente la tarea"];
         }else{
             return ["status"=> "0","message" => "No se pudo devolver la tarea al estudiante"];
