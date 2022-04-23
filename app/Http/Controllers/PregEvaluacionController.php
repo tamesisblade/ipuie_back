@@ -95,7 +95,7 @@ class PregEvaluacionController extends Controller
          FROM preguntas p, pre_evas pe, tipos_preguntas ti
           
           WHERE pe.id_pregunta = p.id 
-          AND ti.id_tipo_pregunta = '5'
+          AND ti.id_tipo_pregunta = p.id_tipo_pregunta
            AND pe.id_evaluacion = $request->evaluacion 
            AND p.estado=1
             AND pe.grupo = $request->grupo ORDER BY RAND()");
