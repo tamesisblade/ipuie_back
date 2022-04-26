@@ -15,7 +15,7 @@ class EvaluacionController extends Controller
      */
     public function index(Request $request)
     {
-        $evaluaciones = DB::SELECT("SELECT e.id, e.nombre_evaluacion, e.id_asignatura,e.id_docente, e.descripcion, e.puntos, e.fecha_inicio, e.fecha_fin, e.duracion, e.estado, a.nombreasignatura FROM evaluaciones e, asignatura a WHERE e.id_asignatura = a.idasignatura");
+        $evaluaciones = DB::SELECT("SELECT e.id, e.nombre_evaluacion,e.id_docente, e.descripcion, e.puntos, e.fecha_inicio, e.fecha_fin, e.duracion, e.estadoa FROM evaluaciones e");
 
         //return Evaluaciones::all();
         return $evaluaciones;
@@ -27,17 +27,11 @@ class EvaluacionController extends Controller
     {
 
         $evaluaciones = DB::SELECT("SELECT DISTINCT c.titulo as nombre_curso,
-       e.codigo_curso, e.id, e.nombre_evaluacion,
-         e.id_asignatura,e.id_docente, e.descripcion, e.puntos, e.fecha_inicio,
-          e.fecha_fin, e.duracion, e.estado,
-           e.grupos_evaluacion, e.cant_unidades
-            FROM evaluaciones e,  cur_secciones_cursos c
-
-             WHERE e.id_docente = '$request->docente'
-             AND e.codigo_curso = '$request->codigo'
-             AND e.codigo_curso = c.id_seccion
-
-                ");
+       e.codigo_curso, e.id, e.nombre_evaluacion, e.id_docente, e.descripcion, e.puntos, e.fecha_inicio,
+          e.fecha_fin, e.duracion, e.estado
+        FROM evaluaciones e,  cur_secciones_cursos c WHERE e.id_docente = '$request->docente'
+        AND e.codigo_curso = '$request->codigo'
+        AND e.codigo_curso = c.id_seccion");
 
         return $evaluaciones;
     }
@@ -235,7 +229,6 @@ class EvaluacionController extends Controller
     {
         $evaluacion = Evaluaciones::find($id);
         $evaluacion->nombre_evaluacion = $request->nombre_evaluacion;
-        $evaluacion->id_asignatura = $request->id_asignatura;
         $evaluacion->descripcion = $request->descripcion;
         $evaluacion->puntos = $request->puntos;
         $evaluacion->fecha_inicio = $request->fecha_inicio;

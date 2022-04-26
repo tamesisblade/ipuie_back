@@ -115,11 +115,15 @@ class NoticiasController extends Controller
         return $comentario;
     }
 
-    public function elimiar_noticia($id_noticia)
+    public function elimiar_noticia($id_noticia, $img_noticia)
     {
         $noticia = Noticias::find($id_noticia);
         $noticia->estado = 0;
         $noticia->save();
+
+        if( file_exists('images/noticias/'.$img_noticia) ){
+            unlink('images/noticias/'.$img_noticia);
+        }
     }
 
     public function elimiar_comentario($id_comentario)

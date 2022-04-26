@@ -12,6 +12,7 @@ Route::group(['middleware' => 'cors'],function(){
     Route::post('addContenidopost', 'CursoController@addContenidoD');
     Route::post('/login', 'AuthController@login');
     Route::post('/register', 'AuthController@register');
+    Route::post('/perfil_usuario', 'AuthController@register');
     Route::post('/crearUsuario', 'AuthController@crearUsuario');
     Route::post('/editarUsuario', 'AuthController@editarUsuario');
     Route::get('eliminarUsuario/{id}', 'AuthController@eliminarUsuario');
@@ -33,7 +34,7 @@ Route::group(['middleware' => 'cors'],function(){
 
     // NOTICIAS
     Route::apiResource('noticias','NoticiasController');
-    Route::get('elimiar_noticia/{id_noticia}','NoticiasController@elimiar_noticia');
+    Route::get('elimiar_noticia/{id_noticia}/{img_noticia}','NoticiasController@elimiar_noticia');
 
     //CONTACTANOS
     Route::post('enviar_mail','NoticiasController@enviar_mail');
@@ -80,7 +81,6 @@ Route::group(['middleware' => 'cors'],function(){
     Route::apiResource('respEvaluacion', 'CalificacionEvalController');
     Route::get('getRespuestas/{id}','PregEvaluacionController@getRespuestas');
     Route::post('getRespuestasAcum','PregEvaluacionController@getRespuestasAcum');
-    Route::post('evaluacionesEstudianteCurso','EvaluacionController@evaluacionesEstudianteCurso');
     Route::post('evalCompleEstCurso','EvaluacionController@evalCompleEstCurso');
     Route::post('pregEvaluacionEstudiante', 'PregEvaluacionController@pregEvaluacionEstudiante');
     Route::get('verEvalCursoExport/{id}','EvaluacionController@verEvalCursoExport');

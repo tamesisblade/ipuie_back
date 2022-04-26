@@ -18,6 +18,7 @@ class AuthController extends Controller {
             'password' => 'required|min:8',
             'nombres' => 'required',
             'apellidos' => 'required',
+            'ciudad' => 'required',
             'email' => 'required|email|unique:usuario',
         ]);
 
@@ -28,6 +29,7 @@ class AuthController extends Controller {
         $user->email = $request->email;
         $user->name_usuario = $request->email;
         $user->id_group = '2';
+        $user->ciudad = $request->ciudad;
         $user->password = sha1(md5($request->password));
         $user->save();
         if ($this->loginAfterSignUp) {
@@ -39,13 +41,15 @@ class AuthController extends Controller {
         ], 200);
     }
 
-    
+
     public function crearUsuario(Request $request) {
 
         $datosValidados=$request->validate([
             'cedula' => 'required|max:11|unique:usuario',
             'password' => 'required|min:8',
             'nombres' => 'required',
+            'apellidos' => 'required',
+            'ciudad' => 'required',
             'apellidos' => 'required',
             'email' => 'required|email|unique:usuario',
         ]);
@@ -56,10 +60,12 @@ class AuthController extends Controller {
         $user->apellidos = $request->apellidos;
         $user->email = $request->email;
         $user->name_usuario = $request->email;
-        $user->id_group = '2';
+        $user->telefono = $request->telefono;
+        $user->id_group = $request->id_group;
+        $user->ciudad = $request->ciudad;
         $user->password = sha1(md5($request->password));
         $user->save();
-        
+
         return $user;
     }
 
@@ -69,6 +75,7 @@ class AuthController extends Controller {
             'cedula' => 'required|max:11',
             'nombres' => 'required',
             'apellidos' => 'required',
+            'ciudad' => 'required',
             'email' => 'required|email',
         ]);
 
@@ -77,11 +84,13 @@ class AuthController extends Controller {
         $user->nombres = $request->nombres;
         $user->apellidos = $request->apellidos;
         $user->email = $request->email;
+        $user->telefono = $request->telefono;
         $user->name_usuario = $request->email;
-        $user->id_group = '2';
-        
+        $user->id_group = $request->id_group;
+        $user->ciudad = $request->ciudad;
+
         $user->save();
-        
+
         return $user;
     }
 
@@ -89,14 +98,14 @@ class AuthController extends Controller {
     public function eliminarUsuario($id) {
 
          $usuario = DB::DELETE("DELETE FROM `usuario` WHERE idusuario=$id");
-        
+
         return $usuario;
     }
 
 
     public function login(Request $request) {
 
-        $usuario = DB::SELECT("SELECT * FROM usuario WHERE name_usuario = ? AND password = ?",[$request->name_usuario,sha1(md5($request->password))]);           
+        $usuario = DB::SELECT("SELECT * FROM usuario WHERE name_usuario = ? AND password = ?",[$request->name_usuario,sha1(md5($request->password))]);
         $input = $request->only('name_usuario', 'password');
         $jwt_token = JWTAuth::attempt($input);
         if ($usuario == null || $usuario ==  '') {
