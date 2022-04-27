@@ -42,7 +42,7 @@ class CalificacionEvalController extends Controller
         $calificacion = new Calificaciones();
         $calificacion->id_estudiante = $request->estudiante;
         $calificacion->id_evaluacion = $request->evaluacion;
-        $calificacion->grupo = $request->grupo;
+        $calificacion->grupo = '1';
         $calificacion->calificacion = $request->calificacion;
 
         $calificacion->save();

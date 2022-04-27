@@ -98,7 +98,7 @@ class PregEvaluacionController extends Controller
           AND ti.id_tipo_pregunta = p.id_tipo_pregunta
            AND pe.id_evaluacion = $request->evaluacion 
            AND p.estado=1
-            AND pe.grupo = $request->grupo ORDER BY RAND()");
+            AND pe.grupo = '1' ORDER BY RAND()");
 
         if(!empty($preguntas)){
             foreach ($preguntas as $key => $value) {

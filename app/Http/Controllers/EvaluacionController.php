@@ -113,8 +113,9 @@ class EvaluacionController extends Controller
              AND e.estado = 1
              AND es.id_estudiante = '$request->estudiante'
              AND es.id_estudiante NOT IN (SELECT c.id_estudiante from calificaciones c WHERE c.id_evaluacion = e.id)
-             AND es.id_curso = cu.id_seccion
-              AND cu.id_seccion = '$request->codigo'
+             AND es.id_curso = cu.id_curso
+              AND cu.id_seccion = '$request->seccion_id'
+              AND es.id_curso = '$request->codigo'
                 ");
 
         return $evaluaciones;
