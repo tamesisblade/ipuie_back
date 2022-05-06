@@ -128,7 +128,7 @@ class PregEvaluacionController extends Controller
     }
 
     public function guardarEvaluacion(Request $request){
-      
+    
         //GUARDAR PREGUNTA
             $pregunta = new Preguntas();
             $pregunta->descripcion = $request->pregunta;         
@@ -147,32 +147,37 @@ class PregEvaluacionController extends Controller
             //si la pregunta es con respuestas
             if($request->conRespuestas){
                 //para guardar la respuesta
-                $respuesta = new OpcionPregunta();
-                $respuesta->id_pregunta = $pregunta->id;
-                $respuesta->opcion = $request->opcion1;
-                $respuesta->tipo = $request->tipo1;
-                $respuesta->save();
-
+                if($request->opcion1 != "undefined"){
+                    $respuesta = new OpcionPregunta();
+                    $respuesta->id_pregunta = $pregunta->id;
+                    $respuesta->opcion = $request->opcion1;
+                    $respuesta->tipo = $request->tipo1;
+                    $respuesta->save();
+                }
                 //segunda respuesta
                 $respuesta2 = new OpcionPregunta();
-                $respuesta2->id_pregunta = $pregunta->id;
-                $respuesta2->opcion = $request->opcion2;
-                $respuesta2->tipo = $request->tipo2;
-                $respuesta2->save();
-
+                if($request->opcion2 != "undefined"){
+                    $respuesta2->id_pregunta = $pregunta->id;
+                    $respuesta2->opcion = $request->opcion2;
+                    $respuesta2->tipo = $request->tipo2;
+                    $respuesta2->save();
+                }
                 //tercera respuesta
-                $respuesta3 = new OpcionPregunta();
-                $respuesta3->id_pregunta = $pregunta->id;
-                $respuesta3->opcion = $request->opcion3;
-                $respuesta3->tipo = $request->tipo3;
-                $respuesta3->save();
-
+                if($request->opcion3 != "undefined"){
+                    $respuesta3 = new OpcionPregunta();
+                    $respuesta3->id_pregunta = $pregunta->id;
+                    $respuesta3->opcion = $request->opcion3;
+                    $respuesta3->tipo = $request->tipo3;
+                    $respuesta3->save();
+                }
                 //cuarta respuesta
-                $respuesta4 = new OpcionPregunta();
-                $respuesta4->id_pregunta = $pregunta->id;
-                $respuesta4->opcion = $request->opcion4;
-                $respuesta4->tipo = $request->tipo4;
-                $respuesta4->save();
+                if($request->opcion4 != "undefined"){
+                    $respuesta4 = new OpcionPregunta();
+                    $respuesta4->id_pregunta = $pregunta->id;
+                    $respuesta4->opcion = $request->opcion4;
+                    $respuesta4->tipo = $request->tipo4;
+                    $respuesta4->save();
+                }
             }
                 
             
