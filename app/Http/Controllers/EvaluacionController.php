@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Calificaciones;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;///instanciamos base de datos para poder hacer consultas con varias tablas
 use App\Evaluaciones;//modelo Evaluaciones.php
@@ -159,7 +160,12 @@ class EvaluacionController extends Controller
                 $calificaciones = DB::SELECT("SELECT DISTINCT e.id, e.nombre_evaluacion, e.puntos, e.duracion, es.id_estudiante,
                  (SELECT c.calificacion FROM calificaciones c
                   WHERE c.id_estudiante = es.id_estudiante
-                  AND c.id_evaluacion = e.id) as calificacion
+                  AND c.id_evaluacion = e.id) as calificacion,
+
+                  (SELECT c.id FROM calificaciones c
+                  WHERE c.id_estudiante = es.id_estudiante
+                  AND c.id_evaluacion = e.id) as calificacion_id
+
                  FROM evaluaciones e, estudiantes_cursos es
                   WHERE e.codigo_curso = ?
                   AND e.codigo_curso = es.id_curso
@@ -189,6 +195,16 @@ class EvaluacionController extends Controller
             $data = [];
         }
         return $data;
+    }
+
+
+    public function changeCalificacion(Request $request){
+        $calificacion = Calificaciones::find($request->id);
+        $calificacion->calificacion = $request->nota;
+        $calificacion->save();
+        if($calificacion){
+            return ["status" => "1","message" => "Se edito la calificacion correctamente"];
+        }
     }
 
 
