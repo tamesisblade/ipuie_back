@@ -83,7 +83,7 @@ Route::group(['middleware' => 'cors'],function(){
     Route::post('getRespuestasAcum','PregEvaluacionController@getRespuestasAcum');
     Route::post('evalCompleEstCurso','EvaluacionController@evalCompleEstCurso');
     Route::post('pregEvaluacionEstudiante', 'PregEvaluacionController@pregEvaluacionEstudiante');
-    Route::get('verEvalCursoExport/{id}','EvaluacionController@verEvalCursoExport');
+    Route::get('verEvalCursoExport/{id}/{seccion}','EvaluacionController@verEvalCursoExport');
     Route::get('verCalificacionEval/{id}/{seccion}','EvaluacionController@verCalificacionEval');
     Route::get('eliminar_evaluacion/{id}','EvaluacionController@eliminar_evaluacion');
     Route::get('quitarPregEvaluacion/{id}','PregEvaluacionController@quitarPregEvaluacion');
