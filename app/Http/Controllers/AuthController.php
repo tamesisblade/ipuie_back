@@ -105,6 +105,7 @@ class AuthController extends Controller {
 
     public function login(Request $request) {
 
+        // return sha1(md5($request->password));
         $usuario = DB::SELECT("SELECT * FROM usuario WHERE name_usuario = ? AND password = ?",[$request->name_usuario,sha1(md5($request->password))]);
         $input = $request->only('name_usuario', 'password');
         $jwt_token = JWTAuth::attempt($input);

@@ -128,7 +128,7 @@ class CursosController extends Controller
 
     public function solicitudes_usuarios()
     {
-        $solicitudes = DB::SELECT("SELECT e.id_estudiante, e.solicitud, e.estado AS estado_inscripcion, c.*, u.cedula, u.nombres, u.apellidos, u.email, u.telefono, e.comprobante, e.forma_pago, e.valor FROM estudiantes_cursos e, usuario u, cur_cursos c WHERE e.id_curso = c.id_curso AND e.id_estudiante = u.idusuario;");
+        $solicitudes = DB::SELECT("SELECT e.id_estudiante, e.solicitud, e.estado AS estado_inscripcion, c.*, u.cedula, u.nombres, u.apellidos, u.email, u.telefono, e.comprobante, e.forma_pago, e.valor FROM estudiantes_cursos e, usuario u, cur_cursos c WHERE e.id_curso = c.id_curso AND e.id_estudiante = u.idusuario ORDER BY e.created_at DESC;");
 
         return $solicitudes;
     }
