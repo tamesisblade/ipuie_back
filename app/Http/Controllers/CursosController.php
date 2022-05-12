@@ -108,7 +108,12 @@ class CursosController extends Controller
 
     public function curso_estudiante($id_curso, $id_estudiante)
     {
-        $cursos = DB::SELECT("SELECT * FROM `estudiantes_cursos` WHERE `id_curso` = ? AND `id_estudiante` = ?", [$id_curso, $id_estudiante]);
+        if( $id_estudiante != 0 ){
+            $cursos = DB::SELECT("SELECT * FROM `estudiantes_cursos` WHERE `id_curso` = ? AND `id_estudiante` = ?", [$id_curso, $id_estudiante]);
+        }else{
+            $cursos = DB::SELECT("SELECT * FROM `estudiantes_cursos` WHERE `id_curso` = ?", [$id_curso]);
+        }
+
 
         if( count($cursos) > 0 ){
             if( $cursos[0]->estado == 1 ){
