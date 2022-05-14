@@ -96,6 +96,22 @@ class CalificacionEvalController extends Controller
         $puntaje =$request->puntaje;
         $resultado = ($puntaje * $puntos) / $cantidadPreguntas;
 
+        $puntajePorPregunta = $puntos / $cantidadPreguntas;
+        //si hay preguntas abiertas colocar los puntos que faltan
+        $abiertas = DB::SELECT("SELECT p.* FROM pre_evas e, preguntas p
+        WHERE  e.id_evaluacion = '$request->evaluacion'
+        AND e.id_pregunta = p.id
+        AND p.id_tipo_pregunta  = '6'
+        ");
+        if(count($abiertas)>0){
+            foreach($abiertas as $key=>$item){
+                DB::table('preguntas')
+                ->where('id', $item->id)
+                ->update(['puntaje_pregunta' => $puntajePorPregunta]);
+            }
+        }
+        
+
         $respuestas = DB::INSERT("INSERT INTO `respuestas_preguntas`(`id_evaluacion`, `id_pregunta`, `id_estudiante`, `respuesta`, `puntaje`) VALUES ($request->evaluacion, $request->pregunta, $request->estudiante, '$request->respuesta', $resultado)");  
     }
 
