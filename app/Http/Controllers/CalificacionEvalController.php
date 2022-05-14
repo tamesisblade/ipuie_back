@@ -39,11 +39,16 @@ class CalificacionEvalController extends Controller
      */
     public function store(Request $request)
     {
+        $cantidadPreguntas = $request->cantidadPreguntas;
+        $puntos = $request->puntos;
+        $puntaje =$request->calificacion;
+        $resultado = ($puntaje * $puntos) / $cantidadPreguntas;
+
         $calificacion = new Calificaciones();
         $calificacion->id_estudiante = $request->estudiante;
         $calificacion->id_evaluacion = $request->evaluacion;
         $calificacion->grupo = '1';
-        $calificacion->calificacion = $request->calificacion;
+        $calificacion->calificacion = $resultado;
 
         $calificacion->save();
 
@@ -86,7 +91,12 @@ class CalificacionEvalController extends Controller
 
     public function guardarRespuesta(Request $request)
     {
-        $respuestas = DB::INSERT("INSERT INTO `respuestas_preguntas`(`id_evaluacion`, `id_pregunta`, `id_estudiante`, `respuesta`, `puntaje`) VALUES ($request->evaluacion, $request->pregunta, $request->estudiante, '$request->respuesta', $request->puntaje)");  
+        $cantidadPreguntas = $request->cantidadPreguntas;
+        $puntos = $request->puntos;
+        $puntaje =$request->puntaje;
+        $resultado = ($puntaje * $puntos) / $cantidadPreguntas;
+
+        $respuestas = DB::INSERT("INSERT INTO `respuestas_preguntas`(`id_evaluacion`, `id_pregunta`, `id_estudiante`, `respuesta`, `puntaje`) VALUES ($request->evaluacion, $request->pregunta, $request->estudiante, '$request->respuesta', $resultado)");  
     }
 
 
