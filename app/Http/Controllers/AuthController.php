@@ -19,6 +19,7 @@ class AuthController extends Controller {
             'nombres' => 'required',
             'apellidos' => 'required',
             'ciudad' => 'required',
+            'telefono' => 'required',
             'email' => 'required|email|unique:usuario',
         ]);
 
@@ -30,6 +31,7 @@ class AuthController extends Controller {
         $user->name_usuario = $request->email;
         $user->id_group = '2';
         $user->ciudad = $request->ciudad;
+        $user->telefono = $request->telefono;
         $user->password = sha1(md5($request->password));
         $user->save();
         if ($this->loginAfterSignUp) {

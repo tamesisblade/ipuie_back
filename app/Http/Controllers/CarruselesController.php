@@ -134,7 +134,11 @@ class CarruselesController extends Controller
     public function eliminar_img_cubo($id_cubo, $img)
     {
         DB::DELETE("DELETE FROM `lay_carruseles` WHERE `id_carrusel` = $id_cubo");
-        unlink('images/carrousel/'.$img);
+        try {
+            unlink('images/carrousel/'.$img);
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
     }
 
     public function get_footer()
@@ -145,9 +149,9 @@ class CarruselesController extends Controller
     }
 
 
-    public function get_acerca()
+    public function get_acerca($id)
     {
-        $acerca = DB::select("SELECT * FROM acerca_de");
+        $acerca = DB::select("SELECT * FROM `acerca_de` WHERE `id` = $id");
 
         return $acerca;
     }

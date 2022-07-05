@@ -37,15 +37,35 @@ class EventosController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
+    { $ruta = public_path('images/eventos');
         if( $request->id != 0 ){
             $agenda = Eventos::find($request->id);
+
+            if($request->file('img_portada') && $request->file('img_portada') != null && $request->file('img_portada')!= 'null'){
+                $file = $request->file('img_portada');
+                $fileName = uniqid().$file->getClientOriginalName();
+                $file->move($ruta,$fileName);
+                if( file_exists('images/eventos/'.$request->img_old) && $request->img_old != '' ){
+                    unlink('images/eventos/'.$request->img_old);
+                }
+            }else{
+                $fileName = $request->img_old;
+            }
+
         }else{
             $agenda = new Eventos();
+
+            $file = $request->file('img_portada');
+            $ruta = public_path('images/eventos');
+            $fileName = uniqid().$file->getClientOriginalName();
+            $file->move($ruta,$fileName);
+
         }
-  
+
+
         $agenda->id_usuario = $request->idusuario;
         $agenda->title = $request->title;
+        $agenda->img_portada = $fileName;
         $agenda->label = $request->label;
         $agenda->classes = $request->classes;
         $agenda->startDate = $request->startDate;

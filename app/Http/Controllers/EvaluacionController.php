@@ -129,7 +129,7 @@ class EvaluacionController extends Controller
     public function evalCompleEstCurso(Request $request)
     {
         $evaluaciones = DB::SELECT("SELECT DISTINCT e.id, c.grupo, c.calificacion, e.nombre_evaluacion, e.descripcion,
-         e.puntos, e.fecha_inicio, e.fecha_fin, e.duracion
+         e.puntos, e.fecha_inicio, e.fecha_fin, e.duracion, c.created_at, c.updated_at
           FROM calificaciones c, evaluaciones e, estudiantes_cursos es
            WHERE c.id_evaluacion = e.id
             AND c.id_estudiante = $request->estudiante
@@ -146,7 +146,7 @@ class EvaluacionController extends Controller
 
      public function verCalificacionEval($codigo,$seccion)
     {
-        $estudiantes = DB::SELECT("SELECT DISTINCT e.id, e.id_estudiante, e.id_curso, u.cedula, u.nombres,
+        $estudiantes = DB::SELECT("SELECT DISTINCT e.id, e.id_estudiante, e.id_curso, u.cedula, u.email, u.nombres,
         u.apellidos, e.estado as estado_estudiante, u.estado_idEstado as estado_usuario,
          e.created_at
          FROM estudiantes_cursos e, usuario u
@@ -172,7 +172,7 @@ class EvaluacionController extends Controller
                   AND e.seccion_id = '$seccion'
                   AND es.id_estudiante = ?",[$codigo, $value->id_estudiante]);
 
-                $total = DB::SELECT("SELECT DISTINCT * FROM evaluaciones e 
+                $total = DB::SELECT("SELECT DISTINCT * FROM evaluaciones e
                 WHERE e.codigo_curso = ?
                 AND e.seccion_id = '$seccion'
                 ",[$codigo]);
@@ -180,6 +180,7 @@ class EvaluacionController extends Controller
                 $data['items'][$key] = [
                     'id' => $value->id,
                     'cedula' => $value->cedula,
+                    'email' => $value->email,
                     'nombres' => $value->nombres,
                     'apellidos' => $value->apellidos,
                     'usuario_idusuario' => $value->id_estudiante,
@@ -290,4 +291,51 @@ class EvaluacionController extends Controller
         $evaluacion = Evaluaciones::find($id_evaluacion);
         $evaluacion->delete();
     }
+
+
+
+    public function reporte_curso_evaluaciones($id_curso)
+    {
+        $data = array();
+
+        $cant_evaluaciones = DB::SELECT("SELECT COUNT(*) AS cantidad FROM `evaluaciones` WHERE `codigo_curso` = $id_curso;");
+
+        $estudiantes = DB::SELECT("SELECT DISTINCT e.id, e.id_estudiante, e.id_curso, u.cedula, u.email, u.nombres,
+        u.apellidos
+        FROM estudiantes_cursos e, usuario u
+        WHERE e.id_estudiante = u.idusuario
+        AND e.id_curso = $id_curso");
+
+        foreach ($estudiantes as $key => $value) {
+            $calificaciones = DB::SELECT("SELECT c.calificacion, e.nombre_evaluacion, e.id, e.puntos, e.duracion, e.fecha_inicio, e.fecha_fin
+            FROM evaluaciones e
+            LEFT JOIN calificaciones c ON e.id = c.id_evaluacion
+            INNER JOIN cur_cursos cu ON e.codigo_curso = cu.id_curso
+            WHERE c.id_estudiante = ? AND e.codigo_curso = ? AND e.estado = 1;", [$value->id_estudiante, $id_curso]);
+
+            $data[$key] = [
+                'id_estudiante' => $value->id_estudiante,
+                'nombres' => $value->nombres,
+                'apellidos' => $value->apellidos,
+                'email' => $value->email,
+                'cedula' => $value->cedula,
+            ];
+
+            if( count($calificaciones) > 0 ){
+                foreach ($calificaciones as $key_c => $value_c) {
+                    array_push($data[$key], $value_c->calificacion);
+                }
+            }else{
+                for( $i=0; $i<$cant_evaluaciones[0]->cantidad; $i++ ){
+                    array_push($data[$key], 0);
+                }
+            }
+
+
+        }
+
+        return response()->json(['data' => $data, 'cantidad' => $cant_evaluaciones[0]->cantidad ]);
+
+    }
+
 }
