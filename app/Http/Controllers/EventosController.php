@@ -73,6 +73,7 @@ class EventosController extends Controller
         $agenda->hora_inicio = $request->hora_inicio;
         $agenda->hora_fin = $request->hora_fin;
         $agenda->url = $request->url;
+        $agenda->link = $request->link;
 
         $agenda->save();
 
@@ -90,6 +91,14 @@ class EventosController extends Controller
         $eventos = DB::select("SELECT * FROM eventos ORDER BY id_eventos");
 
         return $eventos;
+    }
+
+
+    public function ver_inscritos($id)
+    {
+        $inscritos = DB::SELECT("SELECT * FROM `agenda_inscritos` WHERE `id_agenda` = $id");
+
+        return $inscritos;
     }
 
     /**
@@ -118,5 +127,10 @@ class EventosController extends Controller
     public function delete_agenda($id_agenda)
     {
         DB::DELETE("DELETE FROM `agenda_usuario` WHERE `id` = $id_agenda");
+    }
+
+    public function inscripcion_evento(Request $request)
+    {
+        DB::INSERT("INSERT INTO `agenda_inscritos`(`id_agenda`, `identificacion`, `nombres`, `apellidos`, `email`, `telefono`, `genero`) VALUES (?,?,?,?,?,?,?);", [$request->id_evento, $request->identificacion, $request->nombres, $request->apellidos, $request->email, $request->telefono, $request->genero]);
     }
 }

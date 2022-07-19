@@ -53,6 +53,8 @@ Route::group(['middleware' => 'cors'],function(){
     //EVENTOS
     Route::apiResource('eventos','EventosController');
     Route::get('delete_agenda/{id}','EventosController@delete_agenda');
+    Route::get('ver_inscritos/{id}','EventosController@ver_inscritos');
+    Route::post('inscripcion_evento','EventosController@inscripcion_evento');
 
     //PERSONALIZA HOME
     Route::apiResource('carruseles','CarruselesController');
@@ -104,5 +106,7 @@ Route::group(['middleware' => 'cors'],function(){
     Route::post('modificarEvaluacion', 'CalificacionEvalController@modificarEvaluacion');
     Route::get('reporte_curso_evaluaciones/{id_curso}', 'EvaluacionController@reporte_curso_evaluaciones');
 
-
+    // DOCUMENTOS MINISTERIALES
+    Route::apiResource('documentos_ministeriales', 'DocumentosMinisterialesController');
+    Route::get('eliminarDocumento/{id_documento}/{imagen}', 'DocumentosMinisterialesController@eliminarDocumento');
 });
