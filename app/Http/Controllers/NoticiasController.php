@@ -153,21 +153,16 @@ class NoticiasController extends Controller
      */
     public function enviar_mail(Request $request)
     {
-        $correo = $request->correo;
-        $telefono = $request->telefono;
-        $mensaje = $request->mensaje;
-        $envio = Mail::send('plantilla.envio_mail',
-            [
-                'correo' => $correo,
-                'telefono' => $telefono,
-                'mensaje' => $mensaje,
-            ],
-
-            function ($message) use ($correo, $telefono, $mensaje) {
-                $message->from($correo);
-                $message->to('stivenmartinez437@gmail.com')->bcc('alexandro2011.x1@gmail.com')->subject('Mensaje desde pagina web');
-            }
-        );
+        $email_usuario = $request->correo;
+        $datos_mail = [ 'correo' => $request->correo, 'telefono' => $request->telefono, 'mensaje' => $request->mensaje];
+        Mail::send('plantilla.envio_mail', $datos_mail, function ($message) use ($email_usuario) {
+            $message->from('info@ipuiecotocollao.com', 'Ipuie'); // configuracion sendgrid
+            $message->to('info@ipuiecotocollao.com');
+            $message->bcc($email_usuario);
+            $message->subject('Mensaje desde página web');
+        });
     }
+
+    
 
 }
